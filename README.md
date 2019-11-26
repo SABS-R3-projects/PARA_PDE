@@ -1,2 +1,2 @@
 # PARA_PDE
-Pavan, Alistair, Rebecca, Andrei
+Pavan, Alister, Rebecca, Andrei
