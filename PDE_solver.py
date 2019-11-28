@@ -16,6 +16,7 @@ class FitzHugh_Nagumo_solver(object):
         pass 
     
     def fitzhugh_nagumo(self, x_0, a_0: float):
+
         self.x_0 = x_0
         self.a_0 = a_0
         alpha = self.a_0
@@ -27,15 +28,21 @@ class FitzHugh_Nagumo_solver(object):
             return u
 
 
-    def __laplace_matrix(self, N):
+    def __laplace_matrix(self):
+
+        N = len(self.x_0)
         e = np.ones(N)
         diagonals = [e, -2*e, e]
         offsets = [-1, 0, 1]
-        L = scipy.sparse.spdiags(diagonals, offsets, N, N) / h**2
-        return L
+        self.L = scipy.sparse.spdiags(diagonals, offsets, N, N) / h**2
 
-    def solver(self, parameter_list):
-        pass
+        return self.L
+
+    def FN_solver(self, boundary_conditions, step_size):
+        self.h = step_size
+        self.bc = boundary_conditions
+
+        
 
     def plot(self, parameter_list):
         pass
