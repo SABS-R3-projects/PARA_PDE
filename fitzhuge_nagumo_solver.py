@@ -63,8 +63,8 @@ def solve_fitzhuge_nagumo():
 
     numsteps = int(np.ceil(Tf/k)/10) # Based on the final timestep and the step size K, it works out how many frames we have
     Tf = numsteps*k
-    solv = np.zeros()
-    
+    #solv = np.zeros()
+
     def update(frame):
         for i in range(10):
             u_new = u + k*( eps*(L@u + bc) + (u**2 - u**3 - a*u + a*u**2) )
