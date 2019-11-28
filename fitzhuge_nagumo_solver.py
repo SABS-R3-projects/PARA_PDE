@@ -36,7 +36,8 @@ def solve_fitzhuge_nagumo():
     bc = np.concatenate(([0], np.zeros(N-2), [1]))/h**2 # boundary conditions
 
     def initial_conditions(x: list, alpha: float = 0.2):
-        '''Method to set the initial conditions of the Nagumo equation for iterative solving
+        '''Method to set the initial conditions of the Nagumo equation for iterative solving 
+        using the analytical solution
 
         param x: list of position coordinate
         param alpha: alpha is a constant of the equation which should obey 0 < alpha < 0.5 
@@ -52,7 +53,7 @@ def solve_fitzhuge_nagumo():
         return u
 
     u = initial_conditions(x,0.2)
-
+    initial = u
     plt.plot(x,u)
     plt.show()
 
@@ -60,6 +61,10 @@ def solve_fitzhuge_nagumo():
     ln, = plt.plot(x, u)
     ax.set_ylim(0, 1.1)
 
+    numsteps = int(np.ceil(Tf/k)/10) # Based on the final timestep and the step size K, it works out how many frames we have
+    Tf = numsteps*k
+    solv = np.zeros()
+    
     def update(frame):
         for i in range(10):
             u_new = u + k*( eps*(L@u + bc) + (u**2 - u**3 - a*u + a*u**2) )
@@ -67,15 +72,17 @@ def solve_fitzhuge_nagumo():
 
         ln.set_data(x, u)
         ax.set_title('t = {}'.format(10*frame*k))
-        print(frame)
+        #print(frame)
         return ln,
 
-    numsteps = int(np.ceil(Tf/k)/10) # Based on the final timestep and the step size K, it works out how many frames we have
-    Tf = numsteps*k
     ani = FuncAnimation(fig, update, frames=numsteps, interval=30, blit=False, repeat=False)
     plt.show()
 
     plt.plot(x,u)
+    plt.plot(x,initial)
     plt.show()
 
-solve_fitzhuge_nagumo()
+    return u
+
+solution = solve_fitzhuge_nagumo()
+print(solution.shape)
