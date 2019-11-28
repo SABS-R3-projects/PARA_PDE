@@ -28,7 +28,6 @@ def solve_fitzhuge_nagumo():
     h = 0.05
     k = 0.2 * h**2 / eps
     a= 0.13
-    print(k)
     Tf = 42.0
     x = np.arange(0+h, 20-h, h)
 
@@ -36,13 +35,20 @@ def solve_fitzhuge_nagumo():
     L = construct_laplace_matrix_1d(N, h)
     bc = np.concatenate(([0], np.zeros(N-2), [1]))/h**2 # boundary conditions
 
-    def inital_conditions(x,alpha):
+    def initial_conditions(x,alpha = 0.2):
+        '''Method to set the initial conditions of the Nagumo equation for iterative solving
+
+        param x: position coordinate
+        param alpha: alpha is a constant of the equation which should obey 0 < alpha < 0.5 
+                     the default value 0.2 is used if not specified
+        return: initial condition with given parameters
+        '''
         return 0.5*(1 + alpha) + 0.5*(1- alpha)*(np.tanh((np.sqrt(2)*(1-alpha)*x)/4))
 
     size = len(x) 
     u = np.zeros(size)
     for i in range(size):
-        u[i] = (inital_conditions(x[i],0.2))
+        u[i] = (initial_conditions(x[i],0.2))
 
     plt.plot(x,u)
     plt.show()
