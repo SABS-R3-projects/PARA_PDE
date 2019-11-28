@@ -16,7 +16,10 @@ class FitzHugh_Nagumo_solver(object):
         pass 
     
     def fitzhugh_nagumo(self, x_0, a_0: float):
-
+        '''
+        Define Fitzhugh_nagumo model for some initial conditions.
+        Returns initial conditions
+        '''
         self.x_range = x_0
         self.a_0 = a_0
         alpha = self.a_0
@@ -31,8 +34,11 @@ class FitzHugh_Nagumo_solver(object):
 
 
     def __laplace_matrix(self):
-
-        N = len(self.x_0)
+        '''
+        Defines Laplace Matrix with dimensions of X
+        '''
+        N = len(self.x_range)
+        h = self.h
         e = np.ones(N)
         diagonals = [e, -2*e, e]
         offsets = [-1, 0, 1]
@@ -49,6 +55,7 @@ class FitzHugh_Nagumo_solver(object):
         u[:,0] = initial_conds
         k = 0.2 * h**2
         time_steps = 8000
+        L =
         #int(np.ceil(42/k)/10) DO WE NEED THIS?!
 
         for i in range(1:time_steps-1):
