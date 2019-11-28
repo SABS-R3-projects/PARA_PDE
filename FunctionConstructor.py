@@ -1,8 +1,7 @@
 import numpy as np
 
 def Constructor(v,a):
-    '''
-    Function which constructs the righthand side of the FitzHugh-Nagumo Operation.
+    '''Function which constructs the righthand side of the FitzHugh-Nagumo Operation.
 
     Args:
         v (float): transmembrane potential
@@ -25,3 +24,18 @@ def Constructor(v,a):
     '''
 
     return  v * (1 - v) * (v - a)
+
+def HeatEquation(v):
+
+    '''Function which constructs the righthand side of the heat equation.
+
+    Args:
+        v (float): transmembrane potential
+
+    Returns:
+        (float): difference between dvdt and d^2v/dx^2 
+    '''
+
+    # This is used for testing only. 
+
+    return 0
