@@ -79,16 +79,16 @@ class FitzHugh_Nagumo_solver(object):
         u[:,0] = self.__fitzhugh_nagumo_initial_conditions()
 
         #defining the time step size k
-        k = 0.2 * self.h**2
+        self.k = 0.2 * self.h**2
         #calculating the time the simulation runs for 
-        self.end_time = k*self.k_N 
+        self.end_time = self.k*self.k_N 
 
         #calculating the laplace matrix
         L = self.__laplace_matrix()
 
         #iterative finite difference method
         for i in range(1, self.k_N):
-            u[:,i] = u[:,i-1] +  k*( (L@u[:,i-1] + self.bc) 
+            u[:,i] = u[:,i-1] +  self.k*( (L@u[:,i-1] + self.bc) 
             + self.gamma*(u[:,i-1]**2 - u[:,i-1]**3 - self.alpha*u[:,i-1] + self.alpha*u[:,i-1]**2) )
         
         return u

@@ -72,26 +72,7 @@ def solve_fitzhuge_nagumo( eps: float = 1.0, h: float = 0.05, a: float = 0.13, T
         ax.set_title('t = {}'.format(10*frame*k))
         return ln,
 
-    t = np.linspace(0,1,numsteps)
-
-    def solver(u_out, t):
-        for t_iter,i in enumerate(t):
-            if i==0:
-                pass
-            else:
-
-                u_new = u[:]
-                for i in range(10):
-                    u_new = u_new + k*( eps*(L@u_new + bc) + (u_new**2 - u_new**3 - a*u_new + a*u_new**2) )
-                    u_new[:] = u_new
-                u[:] = u_new
-                u_out = np.append(u_out, u_new, axis=0)
-
-        return u_out
-
-    u_output = solver(u_output, t)
-    u_output = np.reshape(u_output,np.meshgrid(t,u)[0].shape)
-
+    
     ani = FuncAnimation(fig, update, frames=numsteps, interval=30, blit=False, repeat=False)
     plt.show()
 
@@ -99,4 +80,4 @@ def solve_fitzhuge_nagumo( eps: float = 1.0, h: float = 0.05, a: float = 0.13, T
     plt.plot(x,initial)
     plt.show()
 
-    return u_output
+    return 
