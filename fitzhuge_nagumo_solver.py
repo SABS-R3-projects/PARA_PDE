@@ -72,6 +72,7 @@ def solve_fitzhuge_nagumo(alpha: float=0.2, beta:float = 1.0, gamma:float = 1.0,
         ax.set_title('t = {}'.format(10*frame*k))
         return ln,
 
+<<<<<<< HEAD
     t = np.linspace(0,1,numsteps)
 
     def solver(u_out, t):
@@ -90,6 +91,9 @@ def solve_fitzhuge_nagumo(alpha: float=0.2, beta:float = 1.0, gamma:float = 1.0,
     u_output = solver(u_output, t)
     u_output = np.reshape(u_output,np.meshgrid(t,u)[0].shape)
 
+=======
+    
+>>>>>>> b8759fbdcef68d6e5db89b82d52c50f5096bdf8e
     ani = FuncAnimation(fig, update, frames=numsteps, interval=30, blit=False, repeat=False)
     plt.show()
 
@@ -97,6 +101,10 @@ def solve_fitzhuge_nagumo(alpha: float=0.2, beta:float = 1.0, gamma:float = 1.0,
     plt.plot(x,initial)
     plt.show()
 
+<<<<<<< HEAD
     return u_output
 
 solve_fitzhuge_nagumo()
+=======
+    return 
+>>>>>>> b8759fbdcef68d6e5db89b82d52c50f5096bdf8e
