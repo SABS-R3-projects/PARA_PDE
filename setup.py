@@ -13,6 +13,7 @@ setup(
 	    'scipy',
 	    'ipython',
         'pandas',
-        'sympy'
+        'sympy',
+        'autograd'
     ],
 )

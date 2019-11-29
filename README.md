@@ -33,7 +33,7 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 Please make sure to update tests as appropriate.
 
 ## License
-[BSD 3-Clause License](https://opensource.org/licenses/BSD-3-Clause) © MIT © [Alister Dale-Evans](https://github.com/alisterde), [Andrei Roibu](https://github.com/AndreiRoibu), [Pavan Chaggar](https://github.com/PavanChaggar), [Rebecca Rumney](https://github.com/Rebecca-Rumney)
+[BSD 3-Clause License](https://opensource.org/licenses/BSD-3-Clause) © [Alister Dale-Evans](https://github.com/alisterde), [Andrei Roibu](https://github.com/AndreiRoibu), [Pavan Chaggar](https://github.com/PavanChaggar), [Rebecca Rumney](https://github.com/Rebecca-Rumney)
 
 ## References
 In the creation of this code, material was used from the following paper:
