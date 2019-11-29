@@ -18,7 +18,7 @@ def construct_laplace_matrix_1d(N: int, h: float):
     L = scipy.sparse.spdiags(diagonals, offsets, N, N) / h**2
     return L
 
-def solve_fitzhuge_nagumo():
+def solve_fitzhuge_nagumo( eps: float = 1.0, h: float = 0.05, a: float = 0.13, Tf: float = 42.0):
     '''Iterative method of solving the Fitzhuge-Nagumo system when episolon is very small as in most
     neuroscience applications know as the Nagumo equation:
 
