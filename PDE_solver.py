@@ -38,7 +38,7 @@ class FitzHugh_Nagumo_solver(object):
         e = np.ones(self.N_dim)
         diagonals = [e, -2*e, e]
         offsets = [-1, 0, 1]
-        self.L = scipy.sparse.spdiags(diagonals, offsets, self.N_dim, self.N_dim) /  self.h **2
+        self.L = self.beta*(scipy.sparse.spdiags(diagonals, offsets, self.N_dim, self.N_dim)) /  self.h **2
 
         return self.L
 
@@ -74,7 +74,7 @@ class FitzHugh_Nagumo_solver(object):
         #int(np.ceil(42/k)/10) DO WE NEED THIS?!
 
         for i in range(1, self.k_N):
-            u[:,i] = u[:,i-1] +  k*( (L@u[:,i-1] + self.bc) + (u[:,i-1]**2 - u[:,i-1]**3 - self.alpha*u[:,i-1] + self.alpha*u[:,i-1]**2) )
+            u[:,i] = u[:,i-1] +  k*( (L@u[:,i-1] + self.bc) + self.gamma*(u[:,i-1]**2 - u[:,i-1]**3 - self.alpha*u[:,i-1] + self.alpha*u[:,i-1]**2) )
         
         return u
 
