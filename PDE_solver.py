@@ -43,7 +43,7 @@ class FitzHugh_Nagumo_solver(object):
         return self.L
 
     def FN_solver(self, x_0 : int, x_n: int, boundary_conditions: tuple = [0,1], step_size: float = 0.05,
-                 time_steps: int = 8000, alpha: float = 0.13):
+                 time_steps: int = 8000, alpha: float = 0.2, beta: float = 1.0, gamma: float = 1.0):
         '''Iterative method of solving the Fitzhuge-Nagumo system when episolon is very small as in most
             neuroscience applications know as the Nagumo equation:
 
@@ -60,6 +60,8 @@ class FitzHugh_Nagumo_solver(object):
         self.h = step_size
         self.x_range = np.arange(x_0+self.h, x_n-self.h, self.h)
         self.alpha = alpha
+        self.beta= beta
+        self.gamma = gamma
         self.N_dim = len(self.x_range)
         self.k_N = time_steps
         lower, upper = boundary_conditions[:]
@@ -72,7 +74,7 @@ class FitzHugh_Nagumo_solver(object):
         #int(np.ceil(42/k)/10) DO WE NEED THIS?!
 
         for i in range(1, self.k_N):
-            u[:,i] = u[:,i-1] + k*( (L@u[:,i-1] + self.bc) + (u[:,i-1]**2 - u[:,i-1]**3 - self.alpha*u[:,i-1] + self.alpha*u[:,i-1]**2) )
+            u[:,i] = u[:,i-1] +  k*( (L@u[:,i-1] + self.bc) + (u[:,i-1]**2 - u[:,i-1]**3 - self.alpha*u[:,i-1] + self.alpha*u[:,i-1]**2) )
         
         return u
 
