@@ -7,7 +7,7 @@ from matplotlib.animation import FuncAnimation
 def initial_conditions(x, a):
     return AnalyticalSolution.AnalyticalSolution(x, 0, alpha=a)
 
-def fitzhugh_nagumo_solver(alpha=0.2, gamma=1, delta=1, max_x=1, max_t=10):
+def fitzhugh_nagumo_solver(alpha=0.2, beta=1, gamma=1, max_x=1, max_t=10):
     # Initial conditions: u(x,0) = I(x)
     # Boundry conditions u(0, t) = B = u(L, t)
     # Fourier Conditions: if x' = x + 2nL then u(x', t) = u(x, t) for all integers n
@@ -40,7 +40,7 @@ def fitzhugh_nagumo_solver(alpha=0.2, gamma=1, delta=1, max_x=1, max_t=10):
         a = np.exp(-np.power(k_j, 2) * delta_t)
         delta_fourier = a * fourier
         delta_f = np.fft.ifft(delta_fourier)
-        return gamma * delta_f
+        return beta * delta_f
 
     def delta_extra(u):
         dg_dt = u * (1 - u) * (u - alpha)
@@ -49,7 +49,7 @@ def fitzhugh_nagumo_solver(alpha=0.2, gamma=1, delta=1, max_x=1, max_t=10):
         calc_2 = -6*u + 2*(1+alpha)
         d3g_dt3 = d2g_dt2*calc_1 + dg_dt*calc_2
         delta_g = dg_dt*delta_t + d2g_dt2*np.power(delta_t, 2)/2 + d3g_dt3*np.power(delta_t, 3)/6
-        return delta * delta_g
+        return gamma * delta_g
 
     def delta_u(u):
         d_u = delta_diffusion(u) + delta_extra(u)
