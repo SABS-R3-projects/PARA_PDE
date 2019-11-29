@@ -2,9 +2,6 @@ import numpy as np
 import scipy
 import scipy.sparse
 import scipy.sparse.linalg
-import matplotlib.pyplot as plt
-import time
-from matplotlib.animation import FuncAnimation
 
 class FitzHugh_Nagumo_solver(object):
     '''
@@ -15,7 +12,7 @@ class FitzHugh_Nagumo_solver(object):
     def __init__ (self):
         pass
     
-    def _fitzhugh_nagumo_initial_conditions(self):
+    def __fitzhugh_nagumo_initial_conditions(self):
         '''
         Method to set the initial conditions of the Nagumo equation for iterative solving 
         using the analytical solution
@@ -74,12 +71,12 @@ class FitzHugh_Nagumo_solver(object):
         self.N_dim = len(self.x_range)
         self.k_N = time_steps
         lower, upper = boundary_conditions[:]
-        self.bc = bc = np.concatenate(([lower], np.zeros(self.N_dim-2), [upper]))/self.h**2
+        self.bc = np.concatenate(([lower], np.zeros(self.N_dim-2), [upper]))/self.h**2
 
         #initialising an empty matrix to contain the calculated solutions 
         u = np.empty((self.N_dim, self.k_N))
         #placing initial conditions into the first column
-        u[:,0] = self._fitzhugh_nagumo_initial_conditions()
+        u[:,0] = self.__fitzhugh_nagumo_initial_conditions()
 
         #defining th time step size k
         k = 0.2 * self.h**2
@@ -95,19 +92,3 @@ class FitzHugh_Nagumo_solver(object):
             + self.gamma*(u[:,i-1]**2 - u[:,i-1]**3 - self.alpha*u[:,i-1] + self.alpha*u[:,i-1]**2) )
         
         return u
-
-# Tf: float = 42.0):
-    def plot(self, parameter_list):
-        pass
-
-    def __update(self, frame):
-        u =_fitzhugh_nagumo_initial_conditions()
-        for i in range(10):
-            u_new = u + k*( eps*(L@u + bc) + (u**2 - u**3 - a*u + a*u**2) )
-            u[:] = u_new
-
-        ln.set_data(x, u)
-        ax.set_title('t = {}'.format(10*frame*k))
-    
-    def animation(self):
-    pass
