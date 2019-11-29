@@ -55,7 +55,7 @@ def fitzhugh_nagumo_solver(alpha=0.2, beta=1, gamma=1, max_x=1, max_t=10):
         d_u = delta_diffusion(u) + delta_extra(u)
         return d_u
 
-    for i in range(0, numsteps):
+    for i in range(0, numsteps-1):
         u_new = u_current + delta_u(u_current)
         u_current = u_new
         u_relevant = u_current[-len(y):]
