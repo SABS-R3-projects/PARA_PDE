@@ -17,7 +17,7 @@ def construct_laplace_matrix_1d(N: int, h: float):
     L = scipy.sparse.spdiags(diagonals, offsets, N, N) / h**2
     return L
 
-def solve_fitzhuge_nagumo( eps: float = 1.0, h: float = 0.05, a: float = 0.13, Tf: float = 42.0):
+def solve_fitzhuge_nagumo(alpha: float=0.2, beta:float = 1.0, gamma:float = 1.0, eps: float = 1.0, h: float = 0.05, a: float = 0.13, Tf: float = 42.0):
     '''Iterative method of solving the Fitzhuge-Nagumo system when episolon is very small as in most
     neuroscience applications know as the Nagumo equation:
                 dv/dt=d^2V/dx^2 + v(1-v)(v-a), where t > 0 and X exists in the reals
@@ -64,7 +64,7 @@ def solve_fitzhuge_nagumo( eps: float = 1.0, h: float = 0.05, a: float = 0.13, T
     def update(frame):
         u_new = u[:]
         for i in range(10):
-            u_new = u_new + k*( eps*(L@u_new + bc) + (u_new**2 - u_new**3 - a*u_new + a*u_new**2) )
+            u_new = u_new + k*( eps*(L@u_new + bc) + (u_new**2 - u_new**3 - alpha*u_new + alpha*u_new**2) )
             u_new[:] = u_new
         u[:] = u_new
 
@@ -72,6 +72,7 @@ def solve_fitzhuge_nagumo( eps: float = 1.0, h: float = 0.05, a: float = 0.13, T
         ax.set_title('t = {}'.format(10*frame*k))
         return ln,
 
+<<<<<<< HEAD
     t = np.linspace(0,1,numsteps)
 
     def solver(u_out, t):
@@ -79,19 +80,20 @@ def solve_fitzhuge_nagumo( eps: float = 1.0, h: float = 0.05, a: float = 0.13, T
             if i==0:
                 pass
             else:
-
                 u_new = u[:]
                 for i in range(10):
                     u_new = u_new + k*( eps*(L@u_new + bc) + (u_new**2 - u_new**3 - a*u_new + a*u_new**2) )
                     u_new[:] = u_new
                 u[:] = u_new
                 u_out = np.append(u_out, u_new, axis=0)
-
         return u_out
 
     u_output = solver(u_output, t)
     u_output = np.reshape(u_output,np.meshgrid(t,u)[0].shape)
 
+=======
+    
+>>>>>>> b8759fbdcef68d6e5db89b82d52c50f5096bdf8e
     ani = FuncAnimation(fig, update, frames=numsteps, interval=30, blit=False, repeat=False)
     plt.show()
 
@@ -99,4 +101,10 @@ def solve_fitzhuge_nagumo( eps: float = 1.0, h: float = 0.05, a: float = 0.13, T
     plt.plot(x,initial)
     plt.show()
 
+<<<<<<< HEAD
     return u_output
+
+solve_fitzhuge_nagumo()
+=======
+    return 
+>>>>>>> b8759fbdcef68d6e5db89b82d52c50f5096bdf8e

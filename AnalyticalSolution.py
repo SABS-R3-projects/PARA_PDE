@@ -26,11 +26,6 @@ def AnalyticalSolution(x, t, alpha=0.2):
     }
     '''
 
-    u = 1.0 / 2.0 * (1 + alpha) + 1.0/2.0 * (1 - alpha) * np.tanh( np.sqrt(2.0)/4.0 * (1-alpha)*x + (1-np.power(alpha,2)) * t ) 
+    u = (1.0 / 2.0) * (1 + alpha) + 1.0/2.0 * (1 - alpha) * np.tanh( np.sqrt(2.0)/4.0 * (1-alpha)*x + (1-np.power(alpha,2)) * t ) 
 
     return u
-
-x = range(0,20)
-y = AnalyticalSolution(x, 0)
-plt.plot(x, y)
-plt.show()
