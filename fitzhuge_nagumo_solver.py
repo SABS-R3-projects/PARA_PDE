@@ -10,7 +10,7 @@ def construct_laplace_matrix_1d(N: int, h: float):
     '''Method to construct a sparse laplace matrix using scipy
 
     param N: dimensions of the laplace matirx
-    param h: step size 
+    param h: step size
     '''
     e = np.ones(N)
     diagonals = [e, -2*e, e]
@@ -36,7 +36,7 @@ def solve_fitzhuge_nagumo():
     bc = np.concatenate(([0], np.zeros(N-2), [1]))/h**2 # boundary conditions
 
     def initial_conditions(x: list, alpha: float = 0.2):
-        '''Method to set the initial conditions of the Nagumo equation for iterative solving 
+        '''Method to set the initial conditions of the Nagumo equation for iterative solving
         using the analytical solution
 
         param x: list of position coordinate
@@ -45,7 +45,7 @@ def solve_fitzhuge_nagumo():
         return: initial condition with given parameters
         '''
 
-        size = len(x) 
+        size = len(x)
         u = np.zeros(size)
         for i in range(size):
             u[i] = 0.5*(1 + alpha) + 0.5*(1- alpha)*(np.tanh((np.sqrt(2)*(1-alpha)*x[i])/4))
@@ -53,6 +53,7 @@ def solve_fitzhuge_nagumo():
         return u
 
     u = initial_conditions(x,0.2)
+    print(u)
     initial = u
     plt.plot(x,u)
     plt.show()
@@ -63,7 +64,6 @@ def solve_fitzhuge_nagumo():
 
     numsteps = int(np.ceil(Tf/k)/10) # Based on the final timestep and the step size K, it works out how many frames we have
     Tf = numsteps*k
-    #solv = np.zeros()
 
     def update(frame):
         for i in range(10):
@@ -73,7 +73,7 @@ def solve_fitzhuge_nagumo():
         ln.set_data(x, u)
         ax.set_title('t = {}'.format(10*frame*k))
         #print(frame)
-        return ln,
+        return ln
 
     ani = FuncAnimation(fig, update, frames=numsteps, interval=30, blit=False, repeat=False)
     plt.show()
