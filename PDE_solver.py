@@ -23,7 +23,7 @@ class FitzHugh_Nagumo_solver(object):
         u = np.zeros(self.N_dim)
 
         for i in range(self.N_dim):
-            u[i] = 0.5*(1 + self.alpha) + 0.5*(1- self.alpha)*(np.tanh((np.sqrt(2)*(1-self.alpha)*self.x_range[i])/4))
+            u[i] = 0.5*(1.0 + self.alpha) + 0.5*(1.0- self.alpha)*(np.tanh((np.sqrt(2.0)*(1.0-self.alpha)*self.x_range[i])/4.0))
         
         return u
 
@@ -78,7 +78,7 @@ class FitzHugh_Nagumo_solver(object):
         #placing initial conditions into the first column
         u[:,0] = self.__fitzhugh_nagumo_initial_conditions()
 
-        #defining th time step size k
+        #defining the time step size k
         k = 0.2 * self.h**2
         #calculating the time the simulation runs for 
         self.end_time = k*self.k_N 
