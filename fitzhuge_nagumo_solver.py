@@ -8,7 +8,6 @@ from matplotlib.animation import FuncAnimation
 
 def construct_laplace_matrix_1d(N: int, h: float):
     '''Method to construct a sparse laplace matrix using scipy
-
     param N: dimensions of the laplace matirx
     param h: step size 
     '''
@@ -18,17 +17,13 @@ def construct_laplace_matrix_1d(N: int, h: float):
     L = scipy.sparse.spdiags(diagonals, offsets, N, N) / h**2
     return L
 
-def solve_fitzhuge_nagumo():
+def solve_fitzhuge_nagumo( eps: float = 1.0, h: float = 0.05, a: float = 0.13, Tf: float = 42.0):
     '''Iterative method of solving the Fitzhuge-Nagumo system when episolon is very small as in most
     neuroscience applications know as the Nagumo equation:
-
                 dv/dt=d^2V/dx^2 + v(1-v)(v-a), where t > 0 and X exists in the reals
     '''
-    eps = 1.0
-    h = 0.05
+    
     k = 0.2 * h**2 / eps
-    a= 0.13
-    Tf = 42.0
     x = np.arange(0+h, 20-h, h)
 
     N = len(x)
@@ -38,7 +33,6 @@ def solve_fitzhuge_nagumo():
     def initial_conditions(x: list, alpha: float = 0.2):
         '''Method to set the initial conditions of the Nagumo equation for iterative solving 
         using the analytical solution
-
         param x: list of position coordinate
         param alpha: alpha is a constant of the equation which should obey 0 < alpha < 0.5 
                      the default value 0.2 is used if not specified
@@ -63,7 +57,7 @@ def solve_fitzhuge_nagumo():
 
     numsteps = int(np.ceil(Tf/k)/10) # Based on the final timestep and the step size K, it works out how many frames we have
     Tf = numsteps*k
-    solv = np.zeros()
+    #solv = np.zeros()
     
     def update(frame):
         for i in range(10):
