@@ -22,6 +22,7 @@ class FitzHugh_Nagumo_solver(object):
 
         return: initial condition with given parameters
         '''
+
         u = np.zeros(self.N_dim)
 
         for i in range(self.N_dim):
@@ -32,9 +33,11 @@ class FitzHugh_Nagumo_solver(object):
 
     def __laplace_matrix(self):
         '''
-        Defines Laplace Matrix with dimensions of X
+        Defines Laplace Matrix with dimensions of X as a sparse matrix
+
         Returns: The laplace matrix for a second order differential 
         '''
+
         e = np.ones(self.N_dim)
         diagonals = [e, -2*e, e]
         offsets = [-1, 0, 1]
@@ -42,21 +45,27 @@ class FitzHugh_Nagumo_solver(object):
 
         return self.L
 
+
     def FN_solver(self, x_0 : int, x_n: int, boundary_conditions: tuple = [0,1], step_size: float = 0.05,
                  time_steps: int = 8000, alpha: float = 0.2, beta: float = 1.0, gamma: float = 1.0):
-        '''Iterative method of solving the Fitzhuge-Nagumo system when episolon is very small as in most
+        '''
+            Iterative method of solving the Fitzhuge-Nagumo system when episolon is very small as in most
             neuroscience applications know as the Nagumo equation:
 
-                dv/dt=d^2V/dx^2 + v(1-v)(v-a), where t > 0 and X exists in the reals
-            param x_0: lower bound of positional dimensions x
-            param x_N: upper bound of positional dimensions x
-            boundary_conditions
-            param N: dimensions of the laplace matirx
-            param h: step size 
-            param alpha: alpha is a constant of the equation which should obey 0 < alpha < 0.5 
-            the default value 0.2 is used if not specified
+                dv/dt= beta * d^2V/dx^2 + gamma * v(1-v)(v-alpha), where t > 0 and X exists in the reals
+
+            param x_0: lower bound of positional dimensions x, this must be specified.
+            param x_N: upper bound of positional dimensions x, this must be specified.
+            param boundary_conditions: The condition of the system at the lower and upper bound respectively, the default value is [0,1].
+            param step_size: Step Size of the positional dimension, the default value is 1.
+            param time_steps: Number of steps in time to be used, the default value is 8000.
+            param alpha: A constant of the equation which should obey 0 < alpha < 0.5, the default value is 0.2.
+            param Beta: A constant of the equation, the default value is 1.
+            param gamma: A constant of the equation, the default value is 1.
+            return: A matrix containing columns of V values for each position x at a given t (each column is a given t and each row is a given x)
         '''
 
+        #defining class variables
         self.h = step_size
         self.x_range = np.arange(x_0+self.h, x_n-self.h, self.h)
         self.alpha = alpha
@@ -67,14 +76,23 @@ class FitzHugh_Nagumo_solver(object):
         lower, upper = boundary_conditions[:]
         self.bc = bc = np.concatenate(([lower], np.zeros(self.N_dim-2), [upper]))/self.h**2
 
+        #initialising an empty matrix to contain the calculated solutions 
         u = np.empty((self.N_dim, self.k_N))
+        #placing initial conditions into the first column
         u[:,0] = self._fitzhugh_nagumo_initial_conditions()
-        k = 0.2 * self.h**2
-        L = self.__laplace_matrix()
-        #int(np.ceil(42/k)/10) DO WE NEED THIS?!
 
+        #defining th time step size k
+        k = 0.2 * self.h**2
+        #calculating the time the simulation runs for 
+        self.end_time = k*self.k_N 
+
+        #calculating the laplace matrix
+        L = self.__laplace_matrix()
+
+        #iterative finite difference method
         for i in range(1, self.k_N):
-            u[:,i] = u[:,i-1] +  k*( (L@u[:,i-1] + self.bc) + self.gamma*(u[:,i-1]**2 - u[:,i-1]**3 - self.alpha*u[:,i-1] + self.alpha*u[:,i-1]**2) )
+            u[:,i] = u[:,i-1] +  k*( (L@u[:,i-1] + self.bc) 
+            + self.gamma*(u[:,i-1]**2 - u[:,i-1]**3 - self.alpha*u[:,i-1] + self.alpha*u[:,i-1]**2) )
         
         return u
 
