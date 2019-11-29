@@ -3,7 +3,7 @@ import time
 from matplotlib import animation
 
     
-def animation(U, timeSteps: int, postionSteps: int, timeStepSize: float):
+def animate(U, timeSteps: int, postionSteps: int, timeStepSize: float):
 
     fig= plt.figure()
     ims = []
@@ -12,3 +12,5 @@ def animation(U, timeSteps: int, postionSteps: int, timeStepSize: float):
         ims.append(im)
     ani = animation.ArtistAnimation(fig, ims, interval = (100*timeStepSize), blit = True)
     plt.show()
+
+#animation(u, trial.k_N, trial.x_range, trial.k)
