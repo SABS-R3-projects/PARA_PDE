@@ -15,7 +15,7 @@ def fitzhugh_nagumo_solver(alpha=0.2, beta=1, gamma=1, max_x=1, max_t=10):
     meshpoints = 1000
     x = np.linspace(-L, L, meshpoints)
     y = np.linspace(0, L, round(meshpoints/2))
-    numsteps = 40
+    numsteps = 32
     delta_t = max_t/numsteps
 
     initial = initial_conditions(10*x, alpha)
@@ -26,9 +26,9 @@ def fitzhugh_nagumo_solver(alpha=0.2, beta=1, gamma=1, max_x=1, max_t=10):
 
     u_relevant = u_current[-len(y):]
 
-    fig, ax = plt.subplots()
-    ln, = plt.plot(y, u_relevant)
-    ax.set_ylim(0, 1.1)
+    # fig, ax = plt.subplots()
+    # ln, = plt.plot(y, u_relevant)
+    # ax.set_ylim(0, 1.1)
 
     all_u = [u_relevant]
 
@@ -61,20 +61,23 @@ def fitzhugh_nagumo_solver(alpha=0.2, beta=1, gamma=1, max_x=1, max_t=10):
         u_relevant = u_current[-len(y):]
         # print(u_relevant)
         all_u.append(np.real(u_relevant))
-        print(all_u[-1])
+        # print(all_u[-1])
 
 
-    def update(frame):
-        ln.set_data(y, all_u[frame])
-        ax.set_title('t = {}'.format(frame * delta_t))
-        return ln,
+    # def update(frame):
+    #     ln.set_data(y, all_u[frame])
+    #     ax.set_title('t = {}'.format(frame * delta_t))
+    #     return ln,
 
-    ani = FuncAnimation(fig, update, frames=numsteps-6, interval=30, blit=False, repeat=False)
-    plt.show()
+    # ani = FuncAnimation(fig, update, frames=numsteps-6, interval=30, blit=False, repeat=False)
+    # plt.show()
 
-    plt.plot(y, all_u[-1])
-    plt.plot(y, all_u[0])
-    plt.show()
-    return all_u
+    # plt.plot(y, all_u[-1])
+    # plt.plot(y, all_u[0])
+    # plt.show()
 
-fitzhugh_nagumo_solver(alpha=0.35)
+    all_u = np.array(all_u)
+
+    return all_u, max_t, max_x
+
+# fitzhugh_nagumo_solver(alpha=0.35)

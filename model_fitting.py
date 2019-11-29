@@ -1,8 +1,9 @@
 import numpy as np
 from scipy.optimize import minimize, shgo
-from PDE_solver import FitzHugh_Nagumo_solver
+# from PDE_solver import FitzHugh_Nagumo_solver
 from AnalyticalSolution import AnalyticalSolution
 from autograd import grad
+from solver_using_fourier_transforms import fitzhugh_nagumo_solver
 
 import matplotlib.pyplot as plt
 
@@ -11,35 +12,33 @@ def ModelFit():
     '''Function which performs PDE Model Fitting using the Solver the Analytical Solutions of the FitzHugh-Nagumo Operation.
 
     The function loops through several optimizers, which depending on hardware might make the runtime long. 
+
+    Two solvers are provided for this function. One is the PDE_solver, which represents a simple approach, while the other is the fitzhugh_nagumo_solver, which employs a accurate space derivative method (ASD)
+
+    As this code is still in development, the PDE_solver does not yet work, so the user is encouraged to select the fitzhugh_nagumo_solver. Instructions are in code. 
     
     '''
-
-    solver = FitzHugh_Nagumo_solver() # Loading the solver
-
-    u = solver.FN_solver(x_0 = 0, x_n = 20)
-    
-
     var = 0.0 # scale of random normal noise
-
     np.random.seed(100) #setting the seed to ensure cosnsitency in random number generation
 
+    ##### To select the PDE_solver, un-cooment this code #####
 
-    t = np.linspace(0,solver.end_time,solver.k_N)
+    # solver = FitzHugh_Nagumo_solver() # Loading the solver
+    # u = solver.FN_solver(x_0 = 0, x_n = 20)
+    # t = np.linspace(0,solver.end_time,solver.k_N)
+    # x = solver.x_range
 
-    T,X = np.meshgrid(t, solver.x_range)
+    ##### To select the fitzhugh_nagumo_solverl, un-comment this code #####
 
-    # Generating noisy data using the Analytical Solution and randomly normal distributed noise
+    u, max_t, max_x = fitzhugh_nagumo_solver()
+    num_timesteps = np.size(u[:,0])
+    num_x_steps = np.size(u[0,:])
+    t = np.linspace(0, max_t, num_timesteps)
+    x = np.linspace(0, max_x, num_x_steps)
 
-    y_data = AnalyticalSolution(X, T, alpha=solver.alpha) + var * np.random.randn(len(solver.x_range), len(t))
-    y_solver = solver.FN_solver(x_0 = 0, x_n = 20)
+    ##### END #####
 
-
-
-    plt.figure()
-    plt.plot(solver.x_range, y_data[:,-1], '*r',label='analytical')
-    plt.plot(solver.x_range, y_solver[:,-1],label='solver')
-    plt.legend()
-    plt.show()
+    T,X = np.meshgrid(t, x)
 
 
     def cost_function(x):
@@ -53,12 +52,26 @@ def ModelFit():
             (float): L2 squared error
         '''
 
-        # y_data = AnalyticalSolution(input_data[0], input_data[1]) + var * np.random.randn(len(solver.x_range), len(t))
-        u = solver.FN_solver(x_0 = 0, x_n = 20, alpha=0.3)
-        y_solver = solver.FN_solver(x_0 = 0, x_n = 20, alpha=x)
-        y_data = u + var * np.random.randn(len(solver.x_range), len(t))
+        ##### To select the PDE_solver, un-cooment this code #####
 
-        # print(np.sum(np.power(y_solver - y_data, 2)))
+        ### Due to the PDE_solver currently working correctly, the y_data is generated using itself plus added noise, to test the correctness of the optimizer methods
+
+        # y_data = AnalyticalSolution(input_data[0], input_data[1]) + var * np.random.randn(len(solver.x_range), len(t))
+
+        # u = solver.FN_solver(x_0 = 0, x_n = 20, alpha=0.2)
+        # y_solver = solver.FN_solver(x_0 = 0, x_n = 20, alpha=x)
+        # y_data = u + var * np.random.randn(len(solver.x_range), len(t))
+
+
+        ##### To select the fitzhugh_nagumo_solverl, un-comment this code #####
+
+        y_data = AnalyticalSolution(X, T, alpha=0.2) + var * np.random.randn(len(x), len(t))
+
+        y_solver, _, _ = fitzhugh_nagumo_solver(alpha=x, beta=1, gamma=1, max_x=1, max_t=10)
+
+        y_solver = y_solver.T
+
+        ##### END #####
 
         return np.sum(np.power(y_solver - y_data, 2))
 
@@ -73,11 +86,12 @@ def ModelFit():
     # gama0 = np.random.normal(1) * var
 
     # original_parameters = [alpha0, beta0, gama0]
+    # bounds = [(0.0, 0.5), (-10.0, 10.0), (-10.0, 10.0)]
+
     original_parameters=np.array([alpha0])
-    bounds=[(0.0,0.5)]
+    bounds = [(0.0, 0.5)]
 
-    desired_parameters= np.array( [0.3, 1.0, 1.0] )
-
+    desired_parameters= np.array( [0.2, 1.0, 1.0] )
 
     def optimize(cost_function, method, autodiff, original_parameters, bounds):
 

@@ -17,15 +17,21 @@ pip install -e .
 ```
 
 ## Usage
-In order to run the solver, type the following commands int the activated python environment. For the **solver** type in the first command, while for the **moldel fitting function** type in the second command. 
+In order to run the solver, type the following commands int the activated python environment. For a **simple solver** type in the first command, for a **fourier transform based solver** ued the second command, while for the **moldel fitting function** type in the second command. 
 
 ```python
-for solver
+python PDE_solver.py
 ```
 
 ```python
-for model_fitting
+python solver_using_fourier_transforms.py
 ```
+
+```python
+python model_fitting.py
+```
+
+The user should know that, in it's current format, the codes are not completely operational. The _PDE-solver_ is currently fails to capture the analytical solution. The _solver-using-fourier-transforms_ currently is operational, however it still has certain issues. The _model-fitting_ script is operational, however it still suffers from dimensionality issues due to incompatibilities with the previous two solvers. In previous tests, however, it proved to be working.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
@@ -55,12 +61,7 @@ publisher={Springer}
 The team would like to express their gratitude to [Martin Robinson](https://github.com/martinjrobins) and [Aleksandra Ardaseva](https://www.maths.ox.ac.uk/people/aleksandra.ardaseva) for their help and support during the development of this code.
 
 ## Build status
-Describe and show how to run the tests with code examples.
-
-Build status of continus integration i.e. travis, appveyor etc. Ex. - 
-
-[![Build Status](https://travis-ci.org/akashnimare/foco.svg?branch=master)](https://travis-ci.org/akashnimare/foco)
-[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/akashnimare/foco?branch=master&svg=true)](https://ci.appveyor.com/project/akashnimare/foco/branch/master)
+Due to problems and issues emerging during the development of the code, no test files were yet created. These will be added later. 
 
 
 
