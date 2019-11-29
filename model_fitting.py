@@ -43,7 +43,7 @@ def ModelFit():
         ADD DESCRIPTION!
         '''
 
-        y_solver = solve_fitzhuge_nagumo(parameters[0],parameters[1],parameters[2])
+        y_solver = solve_fitzhuge_nagumo(alpha=parameters[0],beta=parameters[1],gamma=parameters[2])
 
         return np.sum(np.power(y_solver - y_data, 2))
 
@@ -61,8 +61,9 @@ def ModelFit():
     for method in ['nelder-mead', 'bfgs', 'newton-cg']:
         res = minimize(cost_function, original_parameters, method=method, options={'disp': True})
         print(res.x)
+        
     res2 = shgo(cost_function, bounds=[(0.0,0.5),(-10,10),(-10,10)], options={'disp': True})
-        print(res2.x)
+    print(res2.x)
     
 
 if __name__ == '__main__':

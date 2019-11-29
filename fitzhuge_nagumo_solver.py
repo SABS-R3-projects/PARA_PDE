@@ -17,7 +17,7 @@ def construct_laplace_matrix_1d(N: int, h: float):
     L = scipy.sparse.spdiags(diagonals, offsets, N, N) / h**2
     return L
 
-def solve_fitzhuge_nagumo( eps: float = 1.0, h: float = 0.05, a: float = 0.13, Tf: float = 42.0):
+def solve_fitzhuge_nagumo(alpha: float=0.2, beta:float = 1.0, gamma:float = 1.0, eps: float = 1.0, h: float = 0.05, a: float = 0.13, Tf: float = 42.0):
     '''Iterative method of solving the Fitzhuge-Nagumo system when episolon is very small as in most
     neuroscience applications know as the Nagumo equation:
                 dv/dt=d^2V/dx^2 + v(1-v)(v-a), where t > 0 and X exists in the reals
@@ -64,7 +64,7 @@ def solve_fitzhuge_nagumo( eps: float = 1.0, h: float = 0.05, a: float = 0.13, T
     def update(frame):
         u_new = u[:]
         for i in range(10):
-            u_new = u_new + k*( eps*(L@u_new + bc) + (u_new**2 - u_new**3 - a*u_new + a*u_new**2) )
+            u_new = u_new + k*( eps*(L@u_new + bc) + (u_new**2 - u_new**3 - alpha*u_new + alpha*u_new**2) )
             u_new[:] = u_new
         u[:] = u_new
 
@@ -79,14 +79,12 @@ def solve_fitzhuge_nagumo( eps: float = 1.0, h: float = 0.05, a: float = 0.13, T
             if i==0:
                 pass
             else:
-
                 u_new = u[:]
                 for i in range(10):
                     u_new = u_new + k*( eps*(L@u_new + bc) + (u_new**2 - u_new**3 - a*u_new + a*u_new**2) )
                     u_new[:] = u_new
                 u[:] = u_new
                 u_out = np.append(u_out, u_new, axis=0)
-
         return u_out
 
     u_output = solver(u_output, t)
@@ -100,3 +98,5 @@ def solve_fitzhuge_nagumo( eps: float = 1.0, h: float = 0.05, a: float = 0.13, T
     plt.show()
 
     return u_output
+
+solve_fitzhuge_nagumo()
