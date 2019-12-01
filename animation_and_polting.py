@@ -1,20 +1,16 @@
 import matplotlib.pyplot as plt
 import time
-from matplotlib.animation import FuncAnimation
+from matplotlib import animation
 
-
-# Tf: float = 42.0):
-def plot(self, parameter_list):
-     pass
-
-def __update(self, frame):
-     u =_fitzhugh_nagumo_initial_conditions()
-    for i in range(10):
-        u_new = u + k*( eps*(L@u + bc) + (u**2 - u**3 - a*u + a*u**2) )
-        u[:] = u_new
-
-    ln.set_data(x, u)
-    ax.set_title('t = {}'.format(10*frame*k))
     
-def animation(self):
-pass
+def animate(U, timeSteps: int, postionSteps: int, timeStepSize: float):
+
+    fig= plt.figure()
+    ims = []
+    for i in range(timeSteps):
+        im = plt.plot(postionSteps, U[:,i] , animated = True, color = 'red')
+        ims.append(im)
+    ani = animation.ArtistAnimation(fig, ims, interval = (100*timeStepSize), blit = True)
+    plt.show()
+
+#animation(u, trial.k_N, trial.x_range, trial.k)

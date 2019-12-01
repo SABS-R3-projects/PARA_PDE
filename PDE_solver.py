@@ -3,6 +3,11 @@ import scipy
 import scipy.sparse
 import scipy.sparse.linalg
 
+import matplotlib.pyplot as plt
+import time
+import matplotlib.animation as animation
+
+
 class FitzHugh_Nagumo_solver(object):
     '''
     Class to create and solve Fitzhugh-Nagumo equation
@@ -12,7 +17,8 @@ class FitzHugh_Nagumo_solver(object):
     def __init__ (self):
         pass
     
-    def __fitzhugh_nagumo_initial_conditions(self):
+    def _fitzhugh_nagumo(self, x, time):
+
         '''
         Method to set the initial conditions of the Nagumo equation for iterative solving 
         using the analytical solution
@@ -21,18 +27,21 @@ class FitzHugh_Nagumo_solver(object):
         '''
 
         u = np.zeros(self.N_dim)
-
-        for i in range(self.N_dim):
-            u[i] = 0.5*(1 + self.alpha) + 0.5*(1- self.alpha)*(np.tanh((np.sqrt(2)*(1-self.alpha)*self.x_range[i])/4))
-        
+        if type(x) == int:
+            u = 1.0 / 2.0 * (1 + self.alpha) + 1.0/2.0 * (1 - self.alpha) * np.tanh( np.sqrt(2.0)/4.0 * (1-self.alpha)*x + (1-np.power(self.alpha,2)) * time)
+        else:
+            size = len(x)
+            for i in range(size):
+                u[i] = 1.0 / 2.0 * (1 + self.alpha) + 1.0/2.0 * (1 - self.alpha) * np.tanh( np.sqrt(2.0)/4.0 * (1-self.alpha)*x[i] + (1-np.power(self.alpha,2)) * time)
+                
         return u
 
 
     def __laplace_matrix(self):
         '''
-        Defines Laplace Matrix with dimensions of X as a sparse matrix
+        Defines Laplace Matrix with dimensions of X
+        Returns: The laplace matrix for a second order differential
 
-        Returns: The laplace matrix for a second order differential 
         '''
 
         e = np.ones(self.N_dim)
@@ -42,11 +51,10 @@ class FitzHugh_Nagumo_solver(object):
 
         return self.L
 
+    def FN_solver(self, x_0 : int, x_n: int, step_size: float = 0.05,
+                 time_steps: int = 80, alpha: float = 0.13):
+        '''Iterative method of solving the Fitzhuge-Nagumo system when episolon is very small as in most
 
-    def FN_solver(self, x_0 : int, x_n: int, boundary_conditions: tuple = [0,1], step_size: float = 0.05,
-                 time_steps: int = 8000, alpha: float = 0.2, beta: float = 1.0, gamma: float = 1.0):
-        '''
-            Iterative method of solving the Fitzhuge-Nagumo system when episolon is very small as in most
             neuroscience applications know as the Nagumo equation:
 
                 dv/dt= beta * d^2V/dx^2 + gamma * v(1-v)(v-alpha), where t > 0 and X exists in the reals
@@ -62,33 +70,51 @@ class FitzHugh_Nagumo_solver(object):
             return: A matrix containing columns of V values for each position x at a given t (each column is a given t and each row is a given x)
         '''
 
-        #defining class variables
-        self.h = step_size
+        self.h = x_n/time_steps
+
         self.x_range = np.arange(x_0+self.h, x_n-self.h, self.h)
         self.alpha = alpha
         self.beta= beta
         self.gamma = gamma
         self.N_dim = len(self.x_range)
         self.k_N = time_steps
-        lower, upper = boundary_conditions[:]
-        self.bc = np.concatenate(([lower], np.zeros(self.N_dim-2), [upper]))/self.h**2
 
         #initialising an empty matrix to contain the calculated solutions 
         u = np.empty((self.N_dim, self.k_N))
-        #placing initial conditions into the first column
-        u[:,0] = self.__fitzhugh_nagumo_initial_conditions()
-
-        #defining th time step size k
+        u[:,0] = self._fitzhugh_nagumo(x = self.x_range,time=0)
         k = 0.2 * self.h**2
-        #calculating the time the simulation runs for 
-        self.end_time = k*self.k_N 
+        print(k)
 
-        #calculating the laplace matrix
         L = self.__laplace_matrix()
 
         #iterative finite difference method
         for i in range(1, self.k_N):
-            u[:,i] = u[:,i-1] +  k*( (L@u[:,i-1] + self.bc) 
-            + self.gamma*(u[:,i-1]**2 - u[:,i-1]**3 - self.alpha*u[:,i-1] + self.alpha*u[:,i-1]**2) )
-        
+            lower = self._fitzhugh_nagumo(x = 0,time=i*k)
+            #print(lower)
+            #print(i*k)
+            upper = self._fitzhugh_nagumo(x = 20,time=i*k)
+            bc = np.concatenate(([lower], np.zeros(self.N_dim-2), [upper]))/self.h**2
+            u[:,i] = u[:,i-1] + k*( (L@u[:,i-1] + bc) + (u[:,i-1]**2 - u[:,i-1]**3 - self.alpha*u[:,i-1] + self.alpha*u[:,i-1]**2) )
+            print(u.shape)
         return u
+
+
+if __name__ == '__main__':
+    trial = FitzHugh_Nagumo_solver()
+    u = trial.FN_solver(0,20)
+    print(u.shape)
+    plt.plot(u[:,-1])
+    plt.show()
+
+
+    timeSteps = trial.k_N
+    postionSteps = 398
+    fig= plt.figure()
+    ims = []
+    for i in range(timeSteps):
+        im = plt.plot(u[:,i] , animated = True, color = 'red')
+        ims.append(im)
+
+    ani = animation.ArtistAnimation(fig, ims, interval = (10), blit = True)
+    plt.show()
+
