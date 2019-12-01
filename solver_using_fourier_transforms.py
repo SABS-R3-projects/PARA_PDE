@@ -114,4 +114,5 @@ def animate(alpha=0.2, beta=1, gamma=1, max_x=1, max_t=10):
     plt.show()
 
 
-animate()
+if __name__ == '__main__':
+    animate()

@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.optimize import minimize, shgo
-# from PDE_solver import FitzHugh_Nagumo_solver
+from PDE_solver import FitzHugh_Nagumo_solver
 from AnalyticalSolution import AnalyticalSolution
 from autograd import grad
 from solver_using_fourier_transforms import fitzhugh_nagumo_solver

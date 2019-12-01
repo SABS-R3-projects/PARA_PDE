@@ -99,24 +99,22 @@ class FitzHugh_Nagumo_solver(object):
         return u
 
 
+if __name__ == '__main__':
+    trial = FitzHugh_Nagumo_solver()
+    u = trial.FN_solver(0,20)
+    print(u.shape)
+    plt.plot(u[:,-1])
+    plt.show()
 
 
+    timeSteps = trial.k_N
+    postionSteps = 398
+    fig= plt.figure()
+    ims = []
+    for i in range(timeSteps):
+        im = plt.plot(u[:,i] , animated = True, color = 'red')
+        ims.append(im)
 
-trial = FitzHugh_Nagumo_solver()
-u = trial.FN_solver(0,20)
-print(u.shape)
-plt.plot(u[:,-1])
-plt.show()
-
-
-timeSteps = trial.k_N
-postionSteps = 398
-fig= plt.figure()
-ims = []
-for i in range(timeSteps):
-    im = plt.plot(u[:,i] , animated = True, color = 'red')
-    ims.append(im)
-
-ani = animation.ArtistAnimation(fig, ims, interval = (10), blit = True)
-plt.show()
+    ani = animation.ArtistAnimation(fig, ims, interval = (10), blit = True)
+    plt.show()
 
