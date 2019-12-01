@@ -23,6 +23,22 @@ def fitzhugh_nagumo_solver(alpha=0.2, beta=1, gamma=1, max_x=1, max_t=10):
             :param gamma: A constant of the equation, the default value is 1.
             :return: A matrix containing transmembrane potential values for each position x at a given t (each column is
             a given x and each row is a given t)
+
+    Source of numerical solution method is below:
+    @article{10.2307/3212689,
+    ISSN = {00219002},
+    URL = {http://www.jstor.org/stable/3212689},
+    abstract = {The accurate space derivative (ASD) method for the numerical treatment of nonlinear partial differential equations has been applied to the solution of Fisher's equation, a nonlinear diffusion equation describing the rate of advance of a new advantageous gene, and which is also related to certain water waves and plasma shock waves described by the Korteweg-de-Vries-Burgers equation. The numerical experiments performed indicate how from a variety of initial conditions, (including a step function, and a wave with local perturbation) the concentration of advantageous gene evolves into the travelling wave of minimal speed. For an initial superspeed wave this evolution depends on the cutting off of the right-hand tail of the wave, which is physically plausible; this condition is necessary for the convergence of the ASD method. Detailed comparisons with an analytic solution for the travelling waves illustrate the striking accuracy of the ASD method for other than very small values of the concentration.},
+    author = {Jenö Gazdag and José Canosa},
+    journal = {Journal of Applied Probability},
+    number = {3},
+    pages = {445--457},
+    publisher = {Applied Probability Trust},
+    title = {Numerical Solution of Fisher's Equation},
+    volume = {11},
+    year = {1974}
+    }
+
     """
     # Initial conditions: u(x,0) = I(x)
     #
