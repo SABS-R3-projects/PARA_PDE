@@ -8,35 +8,47 @@ def initial_conditions(x, a):
     return AnalyticalSolution.AnalyticalSolution(x, 0, alpha=a)
 
 def fitzhugh_nagumo_solver(alpha=0.2, beta=1, gamma=1, max_x=1, max_t=10):
+    """A solver for the fitzhugh-nagumo equation using the  accurate space derivative (ASD) method as laid out in
+    Jeno Gazdag's and Jose Canos's paper: Numerical Solution of Fisher's Equation
+
+        This is done by splitting our problem into 2 equations: Simple diffusion: df/dt = d^2u/dx^2 and the extra
+        terms dg/dt = u*(1 - u)*(u - alpha). Where the change in u for our equation is the sum of the change in f and
+        the change in g. The diffusion equation is then solved using fourier transforms and the other equation is
+        solved using taylor expansion.
+
+            :param max_x: upper bound of positional dimension x, this must be specified.
+            :param max_t: amount of time to run the simulation for.
+            :param alpha: A constant of the equation which should obey 0 < alpha < 0.5, the default value is 0.2.
+            :param beta: A constant of the equation, the default value is 1.
+            :param gamma: A constant of the equation, the default value is 1.
+            :return: A matrix containing transmembrane potential values for each position x at a given t (each column is
+            a given x and each row is a given t)
+    """
     # Initial conditions: u(x,0) = I(x)
-    # Boundry conditions u(0, t) = B = u(L, t)
-    # Fourier Conditions: if x' = x + 2nL then u(x', t) = u(x, t) for all integers n
-    L = max_x
+    #
+    # Boundary conditions for the fourier transform: periodic in x, if x' = x + 2nL then u(x', t) = u(x, t) for all
+    # integers n. To translate this boundary condition into our problem we need to leave some buffer space around the
+    # area we are concerned with and make it symmetrical around the origin
+    L = 2*max_x
     meshpoints = 1000
     x = np.linspace(-L, L, meshpoints)
-    y = np.linspace(0, L, round(meshpoints/2))
+    y = np.linspace(0, max_x, round(meshpoints/2))  # the area of x that we are actually concerned with
     numsteps = 32
     delta_t = max_t/numsteps
 
     initial = initial_conditions(10*x, alpha)
     initial = np.hstack((np.flip(initial), initial))
-    x = np.linspace(0, L, meshpoints)
-    x = np.hstack((np.flip(-x), x))
     u_current = initial
 
-    u_relevant = u_current[-len(y):]
+    u_relevant = u_current[-len(y):]  # the values that we are concerned with
 
-    # fig, ax = plt.subplots()
-    # ln, = plt.plot(y, u_relevant)
-    # ax.set_ylim(0, 1.1)
-
-    all_u = [u_relevant]
+    all_u = [u_relevant]  # for the collection of our results
 
     def delta_diffusion(u):
         fourier = np.fft.fft(u)
         delta_x = meshpoints / max_x
-        j = np.linspace(-len(x)/2, len(x)/2, len(x))
-        k_j = j * np.pi / (len(x)/2) * delta_x
+        j = np.linspace(-meshpoints, meshpoints, 2*meshpoints)
+        k_j = j * np.pi / meshpoints * delta_x
         a = np.exp(-np.power(k_j, 2) * delta_t)
         delta_fourier = a * fourier
         delta_f = np.fft.ifft(delta_fourier)
@@ -59,25 +71,47 @@ def fitzhugh_nagumo_solver(alpha=0.2, beta=1, gamma=1, max_x=1, max_t=10):
         u_new = u_current + delta_u(u_current)
         u_current = u_new
         u_relevant = u_current[-len(y):]
-        # print(u_relevant)
         all_u.append(np.real(u_relevant))
-        # print(all_u[-1])
 
-
-    # def update(frame):
-    #     ln.set_data(y, all_u[frame])
-    #     ax.set_title('t = {}'.format(frame * delta_t))
-    #     return ln,
-
-    # ani = FuncAnimation(fig, update, frames=numsteps-6, interval=30, blit=False, repeat=False)
-    # plt.show()
-
-    # plt.plot(y, all_u[-1])
-    # plt.plot(y, all_u[0])
-    # plt.show()
 
     all_u = np.array(all_u)
 
     return all_u, max_t, max_x
 
-# fitzhugh_nagumo_solver(alpha=0.35)
+
+def animate(alpha=0.2, beta=1, gamma=1, max_x=1, max_t=10):
+    """Produces an animation and graph for the solution of the fitzhugh-nagumo equation using the accurate space
+    derivative (ASD) method to solve.
+
+    :param max_x: upper bound of positional dimension x, this must be specified.
+    :param max_t: amount of time to run the simulation for.
+    :param alpha: A constant of the equation which should obey 0 < alpha < 0.5, the default value is 0.2.
+    :param beta: A constant of the equation, the default value is 1.
+    :param gamma: A constant of the equation, the default value is 1.
+    :return: A matrix containing transmembrane potential values for each position x at a given t (each column is
+            a given x and each row is a given t)
+    """
+    all_u, _, _ = fitzhugh_nagumo_solver(alpha, beta, gamma, max_x, max_t)
+    y = np.linspace(0, max_x, 500)
+    numsteps = 32
+    delta_t = max_t/numsteps
+
+    fig, ax = plt.subplots()
+    ln, = plt.plot(y, all_u[0])
+    ax.set_ylim(0, 1.1)
+
+    def update(frame):
+        ln.set_data(y, all_u[frame])
+        ax.set_title('t = {}'.format(frame * delta_t))
+        return ln,
+
+    ani = FuncAnimation(fig, update, frames=numsteps, interval=30, blit=False, repeat=False)
+    plt.show()
+
+    plt.plot(y, all_u[-1], label='End')
+    plt.plot(y, all_u[0], label='Start')
+    plt.legend()
+    plt.show()
+
+
+animate()
