@@ -71,7 +71,7 @@ class FitzHugh_Nagumo_solver(object):
         '''
 
         self.h = x_n/time_steps # positions step size
-        self.x_range = np.arange(x_0+self.h, x_n-self.h, self.h) # numpy array of x poistions used
+        self.x_range = np.arange(x_0, x_n+self.h, self.h) # numpy array of x poistions used 
         self.alpha = alpha
         self.beta= 1.0 # beta vairable may add later
         self.gamma = 1.0 # gamma vairable may add later
