@@ -74,8 +74,13 @@ publisher={Springer}
 The team would like to express their gratitude to [Martin Robinson](https://github.com/martinjrobins) and [Aleksandra Ardaseva](https://www.maths.ox.ac.uk/people/aleksandra.ardaseva) for their help and support during the development of this code.
 
 ## Build status
-Due to problems and issues emerging during the development of the code, no test files were yet created. These will be added later. 
+Basic tests have been written for testing the code. They can be found in the _test_iterative_PDE.py_ file, and can be ran using the command:
 
+```python
+python test_iterative_PDE.py.py
+```
+
+More complex tests will be added as the code is further developed. 
 
 
 
