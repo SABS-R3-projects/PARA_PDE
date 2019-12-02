@@ -82,7 +82,7 @@ class FitzHugh_Nagumo_solver(object):
         u = np.empty((self.N_dim, self.k_N))
         u[:,0] = self._fitzhugh_nagumo(x = self.x_range,time=0)
         self.k = 0.2 * self.h**2
-        print(self.k)
+        #print(self.k)
 
         L = self.__laplace_matrix()
 
@@ -94,14 +94,13 @@ class FitzHugh_Nagumo_solver(object):
             upper = self._fitzhugh_nagumo(x_n,time=i*self.k)
             bc = np.concatenate(([lower], np.zeros(self.N_dim-2), [upper]))/self.h**2
             u[:,i] = u[:,i-1] + self.k*( (L@u[:,i-1] + bc) + (u[:,i-1]**2 - u[:,i-1]**3 - self.alpha*u[:,i-1] + self.alpha*u[:,i-1]**2) )
-            print(u.shape)
+            #print(u.shape)
         return u
 
 
 if __name__ == '__main__':
     trial = FitzHugh_Nagumo_solver()
     u = trial.FN_solver(0,20)
-    print(u.shape)
     plt.plot(u[:,-1])
     plt.show()
 
