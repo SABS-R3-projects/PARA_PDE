@@ -5,6 +5,7 @@ import scipy.sparse.linalg
 import matplotlib.pyplot as plt
 import time
 import matplotlib.animation as animation
+from animation_and_polting import animate
 
 
 class FitzHugh_Nagumo_solver(object):
@@ -80,19 +81,19 @@ class FitzHugh_Nagumo_solver(object):
         #initialising an empty matrix to contain the calculated solutions 
         u = np.empty((self.N_dim, self.k_N))
         u[:,0] = self._fitzhugh_nagumo(x = self.x_range,time=0)
-        k = 0.2 * self.h**2
-        print(k)
+        self.k = 0.2 * self.h**2
+        print(self.k)
 
         L = self.__laplace_matrix()
 
         #iterative finite difference method
         for i in range(1, self.k_N):
-            lower = self._fitzhugh_nagumo(x_0,time=i*k)
+            lower = self._fitzhugh_nagumo(x_0,time=i*self.k)
             #print(lower)
             #print(i*k)
-            upper = self._fitzhugh_nagumo(x_n,time=i*k)
+            upper = self._fitzhugh_nagumo(x_n,time=i*self.k)
             bc = np.concatenate(([lower], np.zeros(self.N_dim-2), [upper]))/self.h**2
-            u[:,i] = u[:,i-1] + k*( (L@u[:,i-1] + bc) + (u[:,i-1]**2 - u[:,i-1]**3 - self.alpha*u[:,i-1] + self.alpha*u[:,i-1]**2) )
+            u[:,i] = u[:,i-1] + self.k*( (L@u[:,i-1] + bc) + (u[:,i-1]**2 - u[:,i-1]**3 - self.alpha*u[:,i-1] + self.alpha*u[:,i-1]**2) )
             print(u.shape)
         return u
 
@@ -105,14 +106,5 @@ if __name__ == '__main__':
     plt.show()
 
 
-    timeSteps = trial.k_N
-    postionSteps = 398
-    fig= plt.figure()
-    ims = []
-    for i in range(timeSteps):
-        im = plt.plot(u[:,i] , animated = True, color = 'red')
-        ims.append(im)
-
-    ani = animation.ArtistAnimation(fig, ims, interval = (10), blit = True)
-    plt.show()
+    animate(u, trial.k_N, trial.x_range, trial.k)
 
