@@ -77,7 +77,7 @@ The team would like to express their gratitude to [Martin Robinson](https://gith
 Basic tests have been written for testing the code. They can be found in the _test_iterative_PDE.py_ file, and can be ran using the command:
 
 ```python
-python test_iterative_PDE.py.py
+python test_iterative_PDE.py
 ```
 
 More complex tests will be added as the code is further developed. 
