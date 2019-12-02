@@ -2,7 +2,6 @@ import numpy as np
 import scipy
 import scipy.sparse
 import scipy.sparse.linalg
-
 import matplotlib.pyplot as plt
 import time
 import matplotlib.animation as animation
@@ -70,14 +69,13 @@ class FitzHugh_Nagumo_solver(object):
             return: A matrix containing columns of V values for each position x at a given t (each column is a given t and each row is a given x)
         '''
 
-        self.h = x_n/time_steps
-
-        self.x_range = np.arange(x_0+self.h, x_n-self.h, self.h)
+        self.h = x_n/time_steps # positions step size
+        self.x_range = np.arange(x_0+self.h, x_n-self.h, self.h) # numpy array of x poistions used
         self.alpha = alpha
-        self.beta= beta
-        self.gamma = gamma
-        self.N_dim = len(self.x_range)
-        self.k_N = time_steps
+        self.beta= 1.0 # beta vairable may add later
+        self.gamma = 1.0 # gamma vairable may add later
+        self.N_dim = len(self.x_range) # dimensions of x poistions varaible (number of X poistions)
+        self.k_N = time_steps # number of time steps
 
         #initialising an empty matrix to contain the calculated solutions 
         u = np.empty((self.N_dim, self.k_N))
@@ -89,10 +87,10 @@ class FitzHugh_Nagumo_solver(object):
 
         #iterative finite difference method
         for i in range(1, self.k_N):
-            lower = self._fitzhugh_nagumo(x = 0,time=i*k)
+            lower = self._fitzhugh_nagumo(x_0,time=i*k)
             #print(lower)
             #print(i*k)
-            upper = self._fitzhugh_nagumo(x = 20,time=i*k)
+            upper = self._fitzhugh_nagumo(x_n,time=i*k)
             bc = np.concatenate(([lower], np.zeros(self.N_dim-2), [upper]))/self.h**2
             u[:,i] = u[:,i-1] + k*( (L@u[:,i-1] + bc) + (u[:,i-1]**2 - u[:,i-1]**3 - self.alpha*u[:,i-1] + self.alpha*u[:,i-1]**2) )
             print(u.shape)
